@@ -1,7 +1,8 @@
 <?php
 
+use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\UserController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -20,3 +21,10 @@ Route::get('/', function () {
 Auth::routes(['register' => false]);
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+Route::get('loged',[HomeController::class,'logued'])->name('logued');
+Route::post('save-password',[UserController::class,'updatePassword'])->name('update.password');
+
+
+
+Route::post('registrar-usuario',[UserController::class,'store'])->name('user.store');

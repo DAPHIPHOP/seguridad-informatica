@@ -15,11 +15,17 @@ class AdminSeeder extends Seeder
      */
     public function run()
     {
+
+        $password=Hash::make('123456789');
         $user=new User();
-        $user->name='Deybi Arroyo';
-        $user->email='super_admin';
-        $user->password=Hash::make('123456789Ab@');
+        $user->name='Deybi';
+        $user->last_name='Arroyo';
+        $user->username='9999999999';
+        $user->email='deybi@gmail.com';
+        $user->password=$password;
         $user->save();
+
+        $user->passwords()->create(['password'=> $password]);
 
         $user->assignRole('Admin');
 
