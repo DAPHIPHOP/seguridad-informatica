@@ -21,6 +21,7 @@ class AdminSeeder extends Seeder
         $user->name='Deybi';
         $user->last_name='Arroyo';
         $user->username='9999999999';
+        $user->dni='9999999999';
         $user->email='deybi@gmail.com';
         $user->password=$password;
         $user->save();

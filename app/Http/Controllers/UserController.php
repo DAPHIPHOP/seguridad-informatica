@@ -18,6 +18,7 @@ class UserController extends Controller
         $password=Hash::make($username);
         $user=new User();
         $user->name=$request->name;
+        $user->dni=$request->dni;
         $user->last_name=$request->last_name;
         $user->username=$username;
         $user->email=$request->email;
@@ -28,7 +29,7 @@ class UserController extends Controller
 
         Mail::to($request->email)->send(new UserCredentials($user, $username, $username));
 
-        return back();
+        return back()->with('created', 'true'); ;
 
         //$user->assignRole('Admin');
     }
@@ -43,5 +44,27 @@ class UserController extends Controller
         $user->passwords()->create(['password'=> $password]);
 
         return redirect()->route('home');
+    }
+
+
+    public function edit($id)
+    {
+       $user=User::find($id);
+       return view('admin.user.edit',['user'=>$user]);
+    }
+
+    public function update(Request $request,$id)
+    {
+        $user=User::find($id);
+        $user->update($request->all());
+        return redirect()->route('home')->with('updated', 'true'); ;
+    }
+
+    public function destroy($id)
+    {
+        $user=User::find($id);
+        $user->passwords()->delete();
+        $user->delete();
+        return redirect()->route('home')->with('destroyed', 'true');
     }
 }

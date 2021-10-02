@@ -63,27 +63,24 @@
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead>
                         <tr>
-                            <th>Nombre</th>
+                            <th>Nombres</th>
+                            <th>Apellidos</th>
+                            <th> Email</th>
                             <th>Perfil</th>
                             <th>Fecha de creacion</th>
                             <th>Acciones</th>
 
                         </tr>
                     </thead>
-                    <tfoot>
-                        <tr>
-                            <th>Nombre</th>
-                            <th>Perfil</th>
-                            <th>Fecha de creacion</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </tfoot>
+
                     <tbody>
 
 
                         @foreach ($usuarios as $usuario)
                             <tr>
                                 <td>{{ $usuario->name }}</td>
+                                <td>{{ $usuario->last_name}}</td>
+                                <td>{{ $usuario->email}}</td>
                                 <td>
                                     @foreach ($usuario->getRoleNames() as $rol)
                                         <li>{{ $rol }}</li>
@@ -91,10 +88,10 @@
                                 </td>
                                 <td>{{ $usuario->created_at }}</td>
                                 <td>
-                                    <a href="#" class="btn btn-danger btn-circle">
+                                    <a  class="btn btn-danger btn-circle" onclick="destroy('{{route('user.destroy',['id'=>$usuario])}}')">
                                         <i class="fas fa-trash"></i>
                                     </a>
-                                    <a href="#" class="btn btn-success btn-circle">
+                                    <a href="{{route('user.edit',["id"=>$usuario])}}" class="btn btn-success btn-circle">
                                         <i class="fas fa-pen"></i>
                                     </a>
                                 </td>
@@ -110,4 +107,40 @@
             </div>
         </div>
     </div>
+
+
+
+@endsection
+
+
+@section('script')
+<script>
+    function destroy(url){
+        Swal.fire({
+            title: 'Desea eliminar el usuario',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Si'
+          }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.replace(url);
+            }
+          })
+    }
+
+    @if(Session::has('destroyed'))
+    Swal.fire('Usuario eliminado')
+    @endif
+
+    @if(Session::has('created'))
+    Swal.fire('Usuario creado')
+    @endif
+
+    @if(Session::has('updated'))
+    Swal.fire('Usuario actualizado')
+    @endif
+</script>
 @endsection

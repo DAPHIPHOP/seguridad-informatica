@@ -28,3 +28,8 @@ Route::post('save-password',[UserController::class,'updatePassword'])->name('upd
 
 
 Route::post('registrar-usuario',[UserController::class,'store'])->name('user.store');
+Route::get('editar-usuario/{id}',[UserController::class,'edit'])->name('user.edit');
+Route::post('actualizar-usuario/{id}',[UserController::class,'update'])->name('user.update');
+Route::get('eliminar-usuario/{id}',[UserController::class,'destroy'])->name('user.destroy');
+
+
