@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use Carbon\Carbon;
+use Spatie\Permission\Models\Role;
 
 class HomeController extends Controller
 {
@@ -24,11 +26,11 @@ class HomeController extends Controller
      */
     public function index()
     {
-
+      $roles=Role::whereStatus('Activo')->get();
        $user=auth()->user();
        if($user->hasRole('Admin')){
         $usuarios=User::all();
-        return view('home', ['usuarios'=>$usuarios]);
+        return view('home', ['usuarios'=>$usuarios,'roles'=>$roles]);
        }else{
         return view('simple-user');
        }
@@ -43,7 +45,17 @@ class HomeController extends Controller
             return view('change-password',['message'=>'Debe cambiar  la contraseña por defecto']);
         }else{
 
+
+
         }
+        $passwords=$user->passwords->sortByDesc('created_at')->take(1);
+
+        $dias_trasncurridos=$passwords->first()->created_at->diffInDays(Carbon::now());
+
+        if($dias_trasncurridos>=30){
+            return view('change-password',['message'=>'Han pasado '. $dias_trasncurridos. ' dias desde el ultimo de contraseña , actualizela por favor .']);
+        }
+
 
         return redirect()->route('home');
     }

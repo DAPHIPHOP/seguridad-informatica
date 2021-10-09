@@ -85,21 +85,29 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"
         integrity="sha512-37T7leoNS06R80c8Ulq7cdCDU5MNQBwlYoy1TX/WUsLFC2eYNqtKlV0QjH7r8JpG/S0GUMZwebnVFLPd6SU5yg=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/additional-methods.min.js" integrity="sha512-XZEy8UQ9rngkxQVugAdOuBRDmJ5N4vCuNXCh8KlniZgDKTvf7zl75QBtaVG1lEhMFe2a2DuA22nZYY+qsI2/xA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/additional-methods.min.js" integrity="sha512-XZEy8UQ9rngkxQVugAdOuBRDmJ5N4vCuNXCh8KlniZgDKTvf7zl75QBtaVG1lEhMFe2a2DuA22nZYY+qsI2/xA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/localization/messages_es_PE.min.js" integrity="sha512-FTLASM/gqDlSKn2uDblTVPSn6c6fMTLlnAP7sBek5M4n9v3ZLcWvkdwfzVWLACsIZHKsxlC1iHSyBiKk09kfcA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-        <script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/additional-methods.min.js"
+        integrity="sha512-XZEy8UQ9rngkxQVugAdOuBRDmJ5N4vCuNXCh8KlniZgDKTvf7zl75QBtaVG1lEhMFe2a2DuA22nZYY+qsI2/xA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/additional-methods.min.js"
+        integrity="sha512-XZEy8UQ9rngkxQVugAdOuBRDmJ5N4vCuNXCh8KlniZgDKTvf7zl75QBtaVG1lEhMFe2a2DuA22nZYY+qsI2/xA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/localization/messages_es_PE.min.js"
+        integrity="sha512-FTLASM/gqDlSKn2uDblTVPSn6c6fMTLlnAP7sBek5M4n9v3ZLcWvkdwfzVWLACsIZHKsxlC1iHSyBiKk09kfcA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
         // just for the demos, avoids form submit
         $.validator.addMethod("passwordcheck", function(value) {
 
 
-            return /^[a-zA-Z0-9]/.test(value)
-            && /[a-z]/.test(value) // has a lowercase letter
-            && /\d/.test(value)//has a digit
-            && /([~,!,@,#,$,%,^,&,*,-,_,+,=,?,>,<])/.test(value)// has a special character
-          },"La contraseña debe contener de 8 a 15 carácteres alfanuméricos (a-z A-Z), contener mínimo un dígito (0-9) y un carácter especial (_-=)."
-          );
+                return /^[a-zA-Z0-9]/.test(value) &&
+                    /[a-z]/.test(value) // has a lowercase letter
+                    &&
+                    /\d/.test(value) //has a digit
+                    &&
+                    /([~,!,@,#,$,%,^,&,*,-,_,+,=,?,>,<])/.test(value) // has a special character
+            },
+            "La contraseña debe contener de 8 a 15 carácteres alfanuméricos (a-z A-Z), contener mínimo un dígito (0-9) y un carácter especial (_-=)."
+        );
 
 
         $("#form").validate({
@@ -107,15 +115,38 @@
                 password: {
                     required: true,
                     minlength: 8,
-                    maxlength:15,
-                   passwordcheck:true
+                    maxlength: 15,
+                    passwordcheck: true,
+                    remote: {
+                        url: '{{ route('validarContrasenia') }}',
+                        type: "get",
+                        data: {
+                            username: function() {
+                                return $("#password").val();
+                            }
+                        }
+                    }
                 },
                 password2: {
                     required: true,
                     minlength: 8,
-                    maxlength:15,
-                   passwordcheck:true,
-                    equalTo: "#password"
+                    maxlength: 15,
+                    passwordcheck: true,
+                    equalTo: "#password",
+                    remote: {
+                        url: '{{ route('validarContrasenia') }}',
+                        type: "get",
+                        data: {
+                            username: function() {
+                                return $("#password").val();
+                            }
+                        }
+                    }
+                }
+            },
+            messages: {
+                password: {
+                    remote: 'Esta contraseña ya ha sido utilizada, utilice una nueva .'
                 }
             }
         });

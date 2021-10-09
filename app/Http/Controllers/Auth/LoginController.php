@@ -28,7 +28,7 @@ class LoginController extends Controller
      */
     //protected $redirectTo = RouteServiceProvider::HOME;
 
-    protected $redirectTo = '/loged';
+    protected $redirectTo = 'loged';
     protected $username   = 'user';
 
     /**
@@ -44,7 +44,7 @@ class LoginController extends Controller
     protected function attemptLogin(Request $request)
     {
         return $this->guard()->attempt(
-            ['username' => $request->email, 'password' => $request->password], $request->filled('remember')
+            ['username' => $request->email, 'password' => $request->password,'state'=>'Activo'], $request->filled('remember')
         );
 
     }

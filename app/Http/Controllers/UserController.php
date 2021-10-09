@@ -26,10 +26,11 @@ class UserController extends Controller
         $user->save();
 
         $user->passwords()->create(['password'=> $password,'is_default'=>true]);
-
+        $user->assignRole($request->rol);
         Mail::to($request->email)->send(new UserCredentials($user, $username, $username));
 
-        return back()->with('created', 'true'); ;
+        return back()->with('created', 'true');
+        ;
 
         //$user->assignRole('Admin');
     }
@@ -49,15 +50,16 @@ class UserController extends Controller
 
     public function edit($id)
     {
-       $user=User::find($id);
-       return view('admin.user.edit',['user'=>$user]);
+        $user=User::find($id);
+        return view('admin.user.edit', ['user'=>$user]);
     }
 
-    public function update(Request $request,$id)
+    public function update(Request $request, $id)
     {
         $user=User::find($id);
         $user->update($request->all());
-        return redirect()->route('home')->with('updated', 'true'); ;
+        return redirect()->route('home')->with('updated', 'true');
+        ;
     }
 
     public function destroy($id)
@@ -66,5 +68,43 @@ class UserController extends Controller
         $user->passwords()->delete();
         $user->delete();
         return redirect()->route('home')->with('destroyed', 'true');
+    }
+
+
+    public function changePassword()
+    {
+        return view('change-password', ['message'=>'']);
+    }
+
+    public function validarContrasenia(Request $request)
+    {
+        $user=auth()->user();
+        $passwords=$user->passwords->sortByDesc('created_at')->take(5);
+
+        foreach ($passwords as $password) {
+            if (Hash::check($request->password, $password->password)) {
+                return 'false';
+            }
+        }
+
+
+        return 'true';
+    }
+
+    public function updateState(Request $request, $id)
+    {
+        $user=User::find($id);
+        $actual_state=$user->state;
+        $new_state='';
+        if ($actual_state=='Activo') {
+            $new_state='Inactivo';
+        } else {
+            $new_state='Activo';
+        }
+
+        $user->state=$new_state;
+        $user->save();
+
+        return  response()->json(['message'=>'Estado actualizado']);
     }
 }
